@@ -1,0 +1,4 @@
+; Swish source for Hello tab
+
+(defn hello [s]
+  (str "Hello, " s "!"))
