@@ -12,18 +12,12 @@ class HelloViewModel {
     private let swish: Swish
 
     init() {
-        let path = Bundle.main.bundlePath
-        swish = Swish(sourcePaths: [path])
+        swish = Swish()
         do {
-            if let filePath = Bundle.main.path(forResource: "hello", ofType: "swish") {
-                try swish.run(filename: filePath)
-            }
-            else {
-                print("Unable to find hello.swish")
-            }
+            try swish.load(filename: "hello.swish")
         }
         catch {
-            print("Unable to load hello.swish: \(error)")
+            print("Unable to load hello.swish")
         }
     }
 

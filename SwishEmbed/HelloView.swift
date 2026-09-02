@@ -13,9 +13,15 @@ struct HelloView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
-                .imageScale(.large)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 128)
                 .foregroundStyle(.tint)
+                .padding(.bottom, 12)
+
             Text(viewModel.message)
+                .bold()
+                .italic()
         }
         .padding()
     }
