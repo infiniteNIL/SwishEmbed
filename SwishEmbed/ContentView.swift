@@ -14,12 +14,12 @@ struct ContentView: View {
                 HelloView()
             }
 
-            Tab("Tab 2", systemImage: "2.circle") {
-                Text("Tab 2")
+            Tab("Data Out", systemImage: "tablecells") {
+                DataOutView()
             }
 
-            Tab("Tab 3", systemImage: "3.circle") {
-                Text("Tab 3")
+            Tab("Data In", systemImage: "square.and.arrow.down") {
+                DataInView()
             }
         }
     }

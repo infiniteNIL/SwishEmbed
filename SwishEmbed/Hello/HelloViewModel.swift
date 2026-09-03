@@ -22,20 +22,14 @@ class HelloViewModel {
     }
 
     var message: String {
-        do {
-            let source = """
+        let source = """
                 (hello "Swish")
                 """
-            let result = try swish.eval(source)
-            if case let .string(s) = result {
-                return s
-            }
-            else {
-                return "Swish didn't return a string."
-            }
+        if let s = try? swish.eval(source).asString() {
+            return s
         }
-        catch {
-            return "Error: \(error)"
+        else {
+            return "Error: Swish eval failed."
         }
     }
 }
