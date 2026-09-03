@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DataOutView: View {
-    @State var viewModel = HelloViewModel()
+    @State var viewModel = DataOutViewModel()
 
     var body: some View {
         VStack {

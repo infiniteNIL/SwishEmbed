@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DataInView: View {
-    @State var viewModel = HelloViewModel()
+    @State var viewModel = DataInViewModel()
 
     var body: some View {
         VStack {
