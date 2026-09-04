@@ -1,5 +1,6 @@
 ; Swish source for Hello tab
-(ns hello)
+
+(ns data-in)
 
 (defn hello [s]
   (str "Hello, " s "!"))

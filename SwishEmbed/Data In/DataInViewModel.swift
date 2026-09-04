@@ -7,10 +7,10 @@ class DataInViewModel {
     init() {
         swish = Swish()
         do {
-            try swish.load(filename: "hello.swish")
+            try swish.load(filename: "data-in.swish")
         }
         catch {
-            print("Unable to load hello.swish")
+            print("Unable to load data-in.swish")
         }
     }
 
