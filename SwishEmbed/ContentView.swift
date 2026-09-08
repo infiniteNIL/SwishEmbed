@@ -14,12 +14,12 @@ struct ContentView: View {
                 HelloView()
             }
 
-            Tab("Data Out", systemImage: "tablecells") {
-                DataOutView()
+            Tab("Call Swish", systemImage: "phone.arrow.up.right") {
+                CallSwishView()
             }
 
-            Tab("Data In", systemImage: "square.and.arrow.down") {
-                DataInView()
+            Tab("Receive Calls", systemImage: "phone.arrow.down.left") {
+                ReceiveCallsView()
             }
         }
     }

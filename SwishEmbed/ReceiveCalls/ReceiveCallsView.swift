@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct DataInView: View {
-    @State var viewModel = DataInViewModel()
+struct ReceiveCallsView: View {
+    @State var viewModel = ReceiveCallsViewModel()
 
     var body: some View {
         VStack {
@@ -21,5 +21,5 @@ struct DataInView: View {
 }
 
 #Preview {
-    DataInView()
+    ReceiveCallsView()
 }

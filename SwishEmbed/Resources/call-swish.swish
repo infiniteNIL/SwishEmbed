@@ -1,6 +1,6 @@
-; Swish source for Data Out tab
+; Swish source for Call Swish tab
 
-(ns data-out)
+(ns call-swish)
 
 (defn double-div [n d]
     (/ n d))

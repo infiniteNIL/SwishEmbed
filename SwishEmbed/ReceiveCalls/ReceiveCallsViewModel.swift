@@ -1,16 +1,16 @@
 import Foundation
 import SwishKit
 
-class DataInViewModel {
+class ReceiveCallsViewModel {
     private let swish: Swish
 
     init() {
         swish = Swish()
         do {
-            try swish.load(filename: "data-in.swish")
+            try swish.load(filename: "receive-calls.swish")
         }
         catch {
-            print("Unable to load data-in.swish")
+            print("Unable to load receive-calls.swish")
         }
     }
 

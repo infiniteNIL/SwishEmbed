@@ -1,16 +1,16 @@
 import Foundation
 import SwishKit
 
-class DataOutViewModel {
+class CallSwishViewModel {
     private let swish: Swish
 
     init() {
         swish = Swish()
         do {
-            try swish.load(filename: "data-out.swish")
+            try swish.load(filename: "call-swish.swish")
         }
         catch {
-            print("Unable to load data-out.swish")
+            print("Unable to load call-swish.swish")
         }
     }
 

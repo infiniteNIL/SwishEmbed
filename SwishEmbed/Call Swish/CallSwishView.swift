@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct DataOutView: View {
-    @State var viewModel = DataOutViewModel()
+struct CallSwishView: View {
+    @State var viewModel = CallSwishViewModel()
 
     var body: some View {
         List {
@@ -27,5 +27,5 @@ struct DataOutView: View {
 }
 
 #Preview {
-    DataOutView()
+    CallSwishView()
 }
