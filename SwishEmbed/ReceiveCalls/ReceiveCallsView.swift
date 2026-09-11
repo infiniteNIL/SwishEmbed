@@ -4,17 +4,27 @@ struct ReceiveCallsView: View {
     @State var viewModel = ReceiveCallsViewModel()
 
     var body: some View {
-        VStack {
-            Image(systemName: "square.and.arrow.down")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 128)
-                .foregroundStyle(.tint)
-                .padding(.bottom, 12)
+        VStack(alignment: .leading) {
+            Text("Full Name at Birth:")
+            TextField("", text: $viewModel.name)
+                .frame(height: 32)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .circular)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
 
-            Text(viewModel.message)
-                .bold()
-                .italic()
+            if !viewModel.name.isEmpty {
+                Text("Vowels:")
+                    .padding(.top, 10)
+                
+                Text(viewModel.vowels)
+                    .bold()
+                    .italic()
+            }
+
+            Spacer()
         }
         .padding()
     }

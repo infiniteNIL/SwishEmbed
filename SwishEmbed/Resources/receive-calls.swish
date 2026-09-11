@@ -2,5 +2,5 @@
 
 (ns receive-calls)
 
-(defn hello [s]
-  (str "Hello, " s "!"))
+(defn vowels [name]
+  (get-vowels name))
