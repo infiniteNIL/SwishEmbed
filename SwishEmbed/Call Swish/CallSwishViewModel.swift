@@ -1,6 +1,13 @@
 import Foundation
 import SwishKit
 
+/// A Swish `defrecord` read straight into a Swift struct. `SwishCodable` is the
+/// whole opt-in — properties map to keyword keys in both directions.
+struct Point: Codable, Equatable, SwishCodable {
+    var x: Int
+    var y: Int
+}
+
 class CallSwishViewModel {
     private let swish: Swish
 
@@ -10,128 +17,103 @@ class CallSwishViewModel {
             try swish.load(filename: "call-swish.swish")
         }
         catch {
-            print("Unable to load call-swish.swish")
+            print("Unable to load call-swish.swish: \(error)")
         }
-    }
-
-    var array: String {
-        if let a = try? swish.eval("(one-to-10)").asArray(Expr.toInt) {
-            "[" + a.map(String.init).joined(separator: ", ") + "]"
-        }
-        else {
-            "[]"
-        }
-    }
-
-    var boolValue: String {
-        if let b = try? swish.eval("(even? 13)").asBool() {
-            String(describing: b)
-        }
-        else {
-            "Error getting Bool"
-        }
-    }
-
-    var char: String {
-        if let c = try? swish.eval("(first \"hello\")").asCharacter() {
-            String(describing: c)
-        }
-        else {
-            "Error getting Character"
-        }
-    }
-
-    var dict: String {
-        if let d = try? swish.eval("{:a 1 :b 2}").asDictionary(mapKey: Expr.toString, mapValue: Expr.toInt) {
-            return String(describing: d)
-        }
-        else {
-            return "[:]"
-        }
-    }
-
-    var july4th: String {
-        // 0700 to account for UTC
-        let date = if let d = try? swish.eval("#inst \"1776-07-04T07:00:00.000-00:00\"").asDate() {
-            d
-        }
-        else {
-            Date()
-        }
-
-        return date.formatted(date: .abbreviated, time: .omitted)
-    }
-
-    var double: String {
-        if let d = try? swish.eval("(double-div 5 2)").asDouble() {
-            "\(d)"
-        }
-        else {
-            "Error getting double"
-        }
-    }
-
-    var float: String {
-        if let f = try? swish.eval("(double-div 5 2)").asFloat() {
-            "\(f)"
-        }
-        else {
-            "Error getting float"
-        }
-    }
-
-    var int: String {
-        if let i = try? swish.eval("(double-div 5 2)").asInt() {
-            "\(i)"
-        }
-        else {
-            "Error getting int"
-        }
-    }
-
-    var sequence: String {
-        guard let seq = try? swish.eval("(range 10)").asSequence() else { return "" }
-        var result: [String] = []
-        for i in seq {
-            if let i = i.asInt() {
-                result.append("\(i)")
-            }
-        }
-        return result.joined(separator: ", ")
-    }
-
-    var regex: String {
-        (try? swish.eval("#\"the*.\"").asRegex()) ?? ""
-    }
-
-    var set: String {
-        let source = """
-            (set ["hello" "goodbye" "hello"])
-        """
-
-        let result = if let newSet = try? swish.eval(source).asSet(Expr.toString) {
-            newSet
-        }
-        else {
-            Set<String>()
-        }
-
-        return String(describing: result)
     }
 
     var string: String {
-        let source = """
-                (hello "Data Out")
-                """
-        if let s = try? swish.eval(source).asString() {
-            return s
-        }
-        else {
-            return "Error: Swish eval failed."
+        value { try swish.call("hello", "Data Out") }
+    }
+
+    var boolValue: String {
+        value { String(describing: try swish.eval("(even? 13)", as: Bool.self)) }
+    }
+
+    var char: String {
+        value { String(try swish.eval(#"(first "hello")"#, as: Character.self)) }
+    }
+
+    var int: String {
+        value { String(try swish.call("int-div", 5, 2) as Int) }
+    }
+
+    var double: String {
+        value { String(try swish.call("double-div", 5, 2) as Double) }
+    }
+
+    var july4th: String {
+        value {
+            let date: Date = try swish.eval(#"#inst "1776-07-04T07:00:00.000-00:00""#)
+            return date.formatted(date: .abbreviated, time: .omitted)
         }
     }
 
     var uuid: String {
-        (try? swish.eval("(random-uuid)").asUUID()?.uuidString) ?? ""
+        value { try swish.eval("(random-uuid)", as: UUID.self).uuidString }
+    }
+
+    /// A vector becomes a `[Int]` with no per-element conversion.
+    var array: String {
+        value { (try swish.call("one-to-10") as [Int]).map(String.init).joined(separator: ", ") }
+    }
+
+    /// Keyword keys read as Swift strings, so this is just a dictionary.
+    var dictionary: String {
+        value {
+            let tally: [String: Int] = try swish.call("tally")
+            return tally.sorted { $0.key < $1.key }
+                .map { "\($0.key): \($0.value)" }
+                .joined(separator: ", ")
+        }
+    }
+
+    var set: String {
+        value { (try swish.call("greetings") as Set<String>).sorted().joined(separator: ", ") }
+    }
+
+    /// A `defrecord` decoded into the `Point` struct above.
+    var record: String {
+        value {
+            let point: Point = try swish.call("origin-offset")
+            return "x: \(point.x), y: \(point.y)"
+        }
+    }
+
+    /// `(naturals)` never ends, so it can only be read a bounded slice at a time —
+    /// converting it to an array outright would hang.
+    var infiniteSequence: String {
+        value {
+            let first = try swish.eval("(naturals)").prefix(10, of: Int.self)
+            return first.map(String.init).joined(separator: ", ") + ", …"
+        }
+    }
+
+    /// A function Swish handed back, called from Swift.
+    var functionValue: String {
+        value {
+            let addTen = try swish.call("adder", 10)
+            return String(try swish.call(addTen, 32) as Int)
+        }
+    }
+
+    /// A conversion that can't succeed, to show what the error reads like.
+    var conversionFailure: String {
+        do {
+            let _: Int = try swish.eval(#""not a number""#)
+            return "unexpectedly succeeded"
+        }
+        catch {
+            return "\(error)"
+        }
+    }
+
+    /// Runs `body`, turning any Swish error into something displayable.
+    private func value(_ body: () throws -> String) -> String {
+        do {
+            return try body()
+        }
+        catch {
+            return "Error: \(error)"
+        }
     }
 }

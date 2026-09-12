@@ -6,7 +6,8 @@
 ._*
 
 # Custom folder icons
-Icon
+Icon
+
 
 # Volume root files
 .DocumentRevisions-V100
@@ -24,6 +25,9 @@ xcuserdata/
 # Xcode build artifacts
 build/
 DerivedData/
+
+# SwiftPM local-package resolution
+.build/
 
 # Obj-C/Swift specific
 *.hmap

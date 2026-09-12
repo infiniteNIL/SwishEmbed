@@ -5,24 +5,30 @@ struct CallSwishView: View {
 
     var body: some View {
         List {
-            Text("Array: 1..10: \(viewModel.array)")
-            Text("Bool: 13 is even is \(viewModel.boolValue)")
-            Text("Char: First of \"hello\": \(viewModel.char)")
-            Text("Date: July 4th: \(viewModel.july4th)")
-            Text("Dictionary: \(viewModel.dict)")
-            Text("Double: 5 / 2: \(viewModel.double)")
-            Text("Float: 5 / 2: \(viewModel.float)")
-            Text("Int: 5 / 2: \(viewModel.int)")
-            Text("Seq: 1..10: \(viewModel.sequence)")
-            Text("Regex: \(viewModel.regex)")
-            Text("Set: \(viewModel.set)")
-            Text("String: \(viewModel.string)")
-            Text("UUID: \(viewModel.uuid)")
+            Section("Scalars") {
+                LabeledContent("String", value: viewModel.string)
+                LabeledContent("Bool", value: viewModel.boolValue)
+                LabeledContent("Character", value: viewModel.char)
+                LabeledContent("Int", value: viewModel.int)
+                LabeledContent("Double", value: viewModel.double)
+                LabeledContent("Date", value: viewModel.july4th)
+                LabeledContent("UUID", value: viewModel.uuid)
+            }
 
-            Spacer()
+            Section("Collections") {
+                LabeledContent("Array", value: viewModel.array)
+                LabeledContent("Dictionary", value: viewModel.dictionary)
+                LabeledContent("Set", value: viewModel.set)
+            }
+
+            Section("Beyond the basics") {
+                LabeledContent("Record", value: viewModel.record)
+                LabeledContent("Infinite seq", value: viewModel.infiniteSequence)
+                LabeledContent("Function value", value: viewModel.functionValue)
+                LabeledContent("Failure", value: viewModel.conversionFailure)
+            }
         }
-        .listStyle(.plain)
-        .padding()
+        .listStyle(.insetGrouped)
     }
 }
 

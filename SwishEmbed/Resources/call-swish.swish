@@ -2,11 +2,33 @@
 
 (ns call-swish)
 
-(defn double-div [n d]
-    (/ n d))
+(defrecord Point [x y])
+
+(defn hello [s]
+  (str "Hello, " s "!"))
 
 (defn one-to-10 []
   [1 2 3 4 5 6 7 8 9 10])
 
-(defn hello [s]
-  (str "Hello, " s "!"))
+(defn double-div [n d]
+  (/ (double n) d))
+
+(defn int-div [n d]
+  (quot n d))
+
+(defn origin-offset []
+  (->Point 3 4))
+
+(defn tally []
+  {:apples 3 :pears 5 :plums 2})
+
+; `set` dedupes; a #{} literal with a duplicate is a read error, as in Clojure.
+(defn greetings []
+  (set ["hello" "goodbye" "hello"]))
+
+; Infinite — only safe to read from Swift with prefix or forEach.
+(defn naturals []
+  (range))
+
+(defn adder [n]
+  (fn [x] (+ x n)))

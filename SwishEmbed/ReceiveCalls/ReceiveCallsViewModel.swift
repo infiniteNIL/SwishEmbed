@@ -1,4 +1,3 @@
-import Foundation
 import Observation
 import SwishKit
 
@@ -10,34 +9,32 @@ class ReceiveCallsViewModel {
     init() {
         swish = Swish()
         do {
+            // Registering before loading isn't required — a host function
+            // registered afterwards is back-filled into namespaces that already
+            // referred clojure.core — but it does mean a failure to load the
+            // source can't leave `get-vowels` unregistered.
+            swish.register(getVowels, as: "get-vowels", doc: "Returns the vowels in s.")
             try swish.load(filename: "receive-calls.swish")
-            swish.register(getVowels, as: "get-vowels")
         }
         catch {
-            print("Unable to load receive-calls.swish")
+            print("Unable to load receive-calls.swish: \(error)")
         }
     }
 
     var vowels: String {
-        if let chars = try? swish.call("vowels", name).asArray(Character.init) {
-            Set(chars.map { "\($0)" })
-                .sorted()
-                .joined(separator: ", ")
+        do {
+            // Decoding straight into a Set both converts and dedupes, so there's
+            // no per-element conversion and no separate uniquing step.
+            let found: Set<Character> = try swish.call("vowels", name)
+            return found.sorted().map(String.init).joined(separator: ", ")
         }
-        else {
-            "Error: Swish call to vowels failed."
+        catch {
+            return "Error: \(error)"
         }
     }
 
     private func getVowels(_ name: String) -> [Character] {
         let vowels: Set<Character> = ["a", "e", "i", "o", "u"]
-        var result: [Character] = []
-        for ch in name {
-            let lowerCh = Character(ch.lowercased())
-            if vowels.contains(lowerCh) {
-                result.append(lowerCh)
-            }
-        }
-        return result
+        return Array(name.lowercased().filter { vowels.contains($0) })
     }
 }
